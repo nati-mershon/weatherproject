@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourPassword123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  weather_service:
+    build: .
+    container_name: weather_service
+    depends_on:
+      - sqlserver
+    environment:
+      MSSQL_HOST: "sqlserver"
+      MSSQL_PORT: "1433"
+      MSSQL_USER: "sa"
+      MSSQL_DATABASE: "WeatherDB"
+      SA_PASSWORD: "YourPassword123"
+    command: ["python", "weather_service.py"]
+
+volumes:
+  sqlserver_data:

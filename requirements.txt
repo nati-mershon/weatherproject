@@ -1,0 +1,5 @@
+flask
+requests
+pyodbc
+logging
+prometheus-flask-exporter

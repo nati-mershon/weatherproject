@@ -1,0 +1,55 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: prometheus
+    meta.helm.sh/release-namespace: monitoring
+  creationTimestamp: "2025-01-23T18:46:11Z"
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
+  labels:
+    app: kube-prometheus-stack-prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    app.kubernetes.io/version: 68.3.0
+    chart: kube-prometheus-stack-68.3.0
+    heritage: Helm
+    release: prometheus
+    self-monitor: "true"
+  name: prometheus-kube-prometheus-prometheus
+  namespace: monitoring
+  resourceVersion: "801400"
+  uid: e97403cf-d73e-4544-9490-3b56c493fb29
+spec:
+  clusterIP: 10.0.169.15
+  clusterIPs:
+  - 10.0.169.15
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http-web
+    nodePort: 31444
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  - appProtocol: http
+    name: reloader-web
+    nodePort: 31410
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: prometheus
+    operator.prometheus.io/name: prometheus-kube-prometheus-prometheus
+  sessionAffinity: None
+  type: NodePort  # ✅ מתוקן!
+status:
+  loadBalancer: {}

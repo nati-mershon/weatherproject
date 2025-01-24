@@ -1,0 +1,6 @@
+# Ignore system folders that cause permission issues
+AppData/
+*.log
+*.md
+__pycache__/
+.env
