@@ -3,26 +3,24 @@ import requests
 import pandas as pd
 import time
 
-# 📌 כתובת השרת – עדכן לפי הכתובת החיצונית של השירות!
+
 API_BASE_URL = "http://4.234.52.245:5000"
 
-# 🎯 כותרת
+
 st.title("🌤 Weather Service Dashboard")
 
-# ✅ **בדיקת Health**
+# ✅ **Health Check**
 st.header("🔍 Service Health Check")
-if st.button("בדוק את זמינות השירות"):
+if st.button("Check Service Availability"):
     health_response = requests.get(f"{API_BASE_URL}/healthz")
     if health_response.status_code == 200:
-        st.success(f"✅ השירות פעיל! {health_response.json()}")
+        st.success(f"✅ Service is running! {health_response.json()}")
     else:
-        st.error(f"❌ שירות לא זמין! קוד: {health_response.status_code}")
+        st.error(f"❌ Service unavailable! Status code: {health_response.status_code}")
 
-# 📊 **תצוגת נתוני מזג אוויר (רענון אוטומטי)**
-st.header("🌡️ נתוני מזג אוויר אחרונים")
-
-# הוספת אפשרות לשליטה ברענון אוטומטי
-auto_refresh = st.checkbox("🔄 רענון אוטומטי כל 5 שניות", value=True)
+# 📊 **Weather Data Display**
+st.header("🌡️ Latest Weather Data")
+auto_refresh = st.checkbox("🔄 Auto-refresh every 5 seconds", value=True)
 
 def load_weather_data():
     weather_response = requests.get(f"{API_BASE_URL}/weather")
@@ -30,39 +28,39 @@ def load_weather_data():
         data = weather_response.json()
         if data:
             df = pd.DataFrame(data)
-            df["date"] = pd.to_datetime(df["date"])  # המרת תאריך לפורמט נוח
+            df["date"] = pd.to_datetime(df["date"])  # Convert to datetime format
             return df
         else:
-            st.warning("⚠️ אין כרגע נתונים זמינים!")
+            st.warning("⚠️ No data available!")
     else:
-        st.error(f"❌ שגיאה בשליפת הנתונים! קוד: {weather_response.status_code}")
+        st.error(f"❌ Error fetching data! Status code: {weather_response.status_code}")
     return None
 
 weather_data = load_weather_data()
 if weather_data is not None:
     st.dataframe(weather_data)
 
-# 🌍 **הפעלת Fetch ומעקב אחרי מצב התהליך**
-st.header("📥 הוסף עיר ושלוף נתונים")
+# 🌍 **Fetch Weather Data**
+st.header("📥 Fetch Weather Data")
 
-if st.button("📡 Fetch מזג אוויר"):
+if st.button("📡 Fetch Weather"):
     fetch_response = requests.post(f"{API_BASE_URL}/fetch")
     if fetch_response.status_code == 200:
-        st.success("✅ הנתונים נאספים כעת! בדוק בעוד כמה שניות.")
+        st.success("✅ Data is being fetched! Check back in a few seconds.")
     elif fetch_response.status_code == 202:
-        st.warning("⏳ Fetch כבר מתבצע, אנא המתן...")
+        st.warning("⏳ Fetch already in progress, please wait...")
     elif fetch_response.status_code == 409:
-        st.error("❌ Fetch כבר רץ ברקע! אנא המתן...")
+        st.error("❌ Fetch is already running in the background!")
     else:
-        st.error(f"❌ שגיאה בעת Fetch! קוד: {fetch_response.status_code}")
+        st.error(f"❌ Fetch error! Status code: {fetch_response.status_code}")
 
-# 🗑️ **כפתור מחיקת כל הנתונים**
-st.header("🗑️ מחיקת כל הנתונים")
+# 🗑️ **Delete All Data**
+st.header("🗑️ Delete All Data")
 
-if st.button("❌ מחק את כל הנתונים"):
+if st.button("❌ Delete All Data"):
     delete_response = requests.delete(f"{API_BASE_URL}/clear_data")
     if delete_response.status_code == 200:
-        st.success("✅ כל הנתונים נמחקו בהצלחה!")
-        st.rerun()  # ✅ שימוש בפונקציה העדכנית
+        st.success("✅ All data successfully deleted!")
+        st.rerun()  # Refresh the app
     else:
-        st.error(f"❌ שגיאה במחיקת הנתונים! קוד: {delete_response.status_code}")
+        st.error(f"❌ Error deleting data! Status code: {delete_response.status_code}")
