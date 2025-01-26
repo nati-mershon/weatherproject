@@ -14,9 +14,9 @@ st.header("🔍 Service Health Check")
 if st.button("Check Service Availability"):
     health_response = requests.get(f"{API_BASE_URL}/healthz")
     if health_response.status_code == 200:
-        st.success(f"✅ Service is running! {health_response.json()}")
+        st.success(f"✅ Service is running!")
     else:
-        st.error(f"❌ Service unavailable! Status code: {health_response.status_code}")
+        st.error(f"❌ Service unavailable!")
 
 # 📊 **Weather Data Display**
 st.header("🌡️ Latest Weather Data")
