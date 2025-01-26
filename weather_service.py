@@ -8,10 +8,10 @@ from datetime import datetime, timedelta
 from flask import Flask, jsonify
 from prometheus_flask_exporter import PrometheusMetrics
 
-# 📌 Configure logging
+#  Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# 📌 Database connection parameters
+#  Database connection parameters
 DB_SERVER = os.getenv("MSSQL_HOST", "sqlserver.default.svc.cluster.local")
 DB_PORT = os.getenv("MSSQL_PORT", "1433")
 DB_NAME = os.getenv("MSSQL_DATABASE", "WeatherDB")
@@ -21,11 +21,11 @@ DB_PASSWORD = os.getenv("SA_PASSWORD", "YourPassword123")
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
 
-# 🔹 משתנים גלובליים למעקב
+# 
 fetching_data = False  
 fetch_thread = None  
 
-# 🔹 רשימת 20 ערים מפורסמות עם קואורדינטות
+# List of cities with coordinates
 CITIES = [
     {"name": "London", "lat": 51.5074, "lon": -0.1278},
     {"name": "New York", "lat": 40.7128, "lon": -74.0060},
@@ -50,7 +50,7 @@ CITIES = [
 ]
 
 def get_db_connection():
-    """יוצר חיבור ל-SQL Server"""
+     """Connect to SQL Server"""
     try:
         conn = pyodbc.connect(
             f"DRIVER={{ODBC Driver 17 for SQL Server}};"
@@ -69,12 +69,12 @@ def get_db_connection():
 
 @app.route("/healthz")
 def health_check():
-    """ בדיקת מצב השירות """
+    """Check service health"""
     return jsonify({"status": "ok", "message": "Weather service is running!"}), 200
 
 @app.route("/weather")
 def get_weather_data():
-    """מחזיר נתוני מזג אוויר ממסד הנתונים בפורמט JSON"""
+    """Fetch weather data from database"""
     try:
         conn = get_db_connection()
         if not conn:
@@ -107,7 +107,7 @@ def get_weather_data():
 
 @app.route("/clear_data", methods=["DELETE"])
 def clear_weather_data():
-    """ מוחק את כל הנתונים מה-DB """
+     """Delete all weather data"""
     try:
         connection = get_db_connection()
         if not connection:
@@ -121,16 +121,16 @@ def clear_weather_data():
         cursor.close()
         connection.close()
         logging.info("🗑️ All weather data has been cleared from the database!")
-        return jsonify({"message": "✅ כל הנתונים נמחקו בהצלחה!"}), 200
+        return jsonify({"message": "✅ All data successfully deleted!"}), 200
     except Exception as e:
         logging.error(f"🚨 Error clearing data: {e}")
-        return jsonify({"error": "❌ כשל במחיקת הנתונים"}), 500
+        return jsonify({"error": "❌ Error deleting data"}), 500
 
 
 
 @app.route("/fetch", methods=["POST"])
 def fetch_weather():
-    """מפעיל תהליך רקע להבאת נתוני מזג אוויר"""
+    """fetch weather data"""
     global fetching_data, fetch_thread
     if fetching_data:
         return jsonify({"message": "Weather data fetch already in progress!"}), 409
@@ -142,7 +142,7 @@ def fetch_weather():
     return jsonify({"message": "Weather data fetch started!", "status": "ok"}), 200
 
 def fetch_and_store_weather_data():
-    """מביא ושומר נתוני מזג אוויר מ-API חיצוני"""
+    
     global fetching_data
     fetching_data = True
     try:
@@ -153,7 +153,7 @@ def fetch_and_store_weather_data():
             return
         cursor = connection.cursor()
 
-        # 🔹 בחירת עיר רנדומלית
+       
         selected_city = random.choice(CITIES)
         CITY_NAME, LAT, LON = selected_city["name"], selected_city["lat"], selected_city["lon"]
         logging.info(f"🌍 Fetching weather data for {CITY_NAME} ({LAT}, {LON})")
@@ -179,7 +179,7 @@ def fetch_and_store_weather_data():
 
         for i, date in enumerate(data['daily']['time']):
             cursor.execute("SELECT COUNT(*) FROM WeatherData WHERE city_id = ? AND date = ?", city_id, date)
-            if cursor.fetchone()[0] == 0:  # הוספת הנתון רק אם לא קיים
+            if cursor.fetchone()[0] == 0: 
                 cursor.execute("INSERT INTO WeatherData (city_id, date, min_temp, max_temp, precipitation) VALUES (?, ?, ?, ?, ?)",
                                city_id, date, data['daily']['temperature_2m_min'][i], data['daily']['temperature_2m_max'][i], data['daily']['precipitation_sum'][i])
 
