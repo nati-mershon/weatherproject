@@ -17,10 +17,10 @@ spec:
         - name: weather-service
           image: natimershon/weather_service:latest  
           ports:
-            - containerPort: 5000  # ✅ שינוי ל-5000 במקום 8000
+            - containerPort: 5000  
           env:
               - name: MSSQL_HOST
-                value: "sqlserver.default.svc.cluster.local"  # ✅ כתובת פנימית
+                value: "sqlserver.default.svc.cluster.local"  
               - name: MSSQL_PORT
                 value: "1433"
               - name: MSSQL_USER
@@ -31,21 +31,21 @@ spec:
                 value: "YourPassword123"
               - name: FLASK_PORT
                 value: "5000"
-          resources:  # ✅ הוספת מגבלות משאבים
+          resources: 
             limits:
               memory: "512Mi"
               cpu: "500m"
             requests:
               memory: "256Mi"
               cpu: "250m"
-          readinessProbe:  # ✅ בדיקה אם השירות מוכן לקבל חיבורים
+          readinessProbe: 
             httpGet:
               path: /healthz
               port: 5000
             initialDelaySeconds: 5
             periodSeconds: 10
             failureThreshold: 3
-          livenessProbe:  # ✅ בדיקה אם השירות עדיין רץ
+          livenessProbe:  
             httpGet:
               path: /healthz
               port: 5000
