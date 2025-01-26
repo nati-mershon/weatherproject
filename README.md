@@ -15,7 +15,7 @@ A **Streamlit dashboard** is also included for easy data visualization.
 
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/YOUR_USERNAME/weather_project.git
+   git clone https://github.com/nati-mershon/weather_project.git
    cd weather_project
    ```
 
