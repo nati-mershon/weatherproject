@@ -4,7 +4,7 @@ import pandas as pd
 import time
 
 
-API_BASE_URL = "http://4.250.138.160:5000"
+API_BASE_URL = "http://85.210.59.117:5000"
 
 
 st.title("🌤 Weather Service Dashboard")
