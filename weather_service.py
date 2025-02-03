@@ -50,7 +50,7 @@ CITIES = [
 ]
 
 def get_db_connection():
-     """Connect to SQL Server"""
+    """Connect to SQL Server"""
     try:
         conn = pyodbc.connect(
             f"DRIVER={{ODBC Driver 17 for SQL Server}};"
@@ -107,7 +107,7 @@ def get_weather_data():
 
 @app.route("/clear_data", methods=["DELETE"])
 def clear_weather_data():
-     """Delete all weather data"""
+    """Delete all weather data"""
     try:
         connection = get_db_connection()
         if not connection:
@@ -192,4 +192,3 @@ def fetch_and_store_weather_data():
 
 if __name__ == "__main__":
     logging.info("🚀 Weather Service Started! Running Flask server...")
-    app.run(host="0.0.0.0", port=5000)
